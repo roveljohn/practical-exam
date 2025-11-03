@@ -1,0 +1,47 @@
+Summary: PHP Data Structures and Book Management System
+ 
+This system provides three distinct methods for managing and accessing book data, each using different programming approaches for optimal performance.
+ 
+1. Recursive Category Display
+​
+- Functionality: Processes nested book categories through self-calling functions.
+​
+- Features:
+​
+- Dynamically adjusts indentation to visualize hierarchy depth.
+​
+- Handles unlimited subcategory levels without manual configuration.
+​
+- Example:
+ 
+ 
+​
+2. Hash Table Data Retrieval
+​
+- Functionality: Implements associative arrays for O(1) access time.
+​
+- Features:
+​
+- Maps book titles directly to metadata collections.
+​
+- Provides immediate fail-safes for missing entries.
+​
+- Example:
+ 
+ 
+​
+3. Binary Search Tree Operations
+​
+- Functionality: Maintains sorted order through tree structure properties.
+​
+- Features:
+​
+- Enables efficient search operations with O(log n) complexity.
+​
+- Automatically outputs elements in sorted sequence via inorder traversal.
+​
+- Example:
+ 
+ 
+ 
+This system combines data structures like recursion, hash tables, and binary search trees, aiming to provide an efficient, flexible, and reliable solution for book data management..
