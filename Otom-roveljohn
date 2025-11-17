@@ -1,1 +1,57 @@
-Oton-roveljohn
+<?php
+// bst.php
+// Binary Search Tree (BST) for managing book titles
+
+class Node {
+    public $data;
+    public $left;
+    public $right;
+
+    public function __construct($data) {
+        $this->data = $data;
+        $this->left = null;
+        $this->right = null;
+    }
+}
+
+class BinarySearchTree {
+    private $root = null;
+
+    public function insert($data) {
+        $this->root = $this->insertRec($this->root, $data);
+    }
+
+    private function insertRec($node, $data) {
+        if ($node === null) return new Node($data);
+        $cmp = strcasecmp($data, $node->data);
+        if ($cmp < 0) $node->left = $this->insertRec($node->left, $data);
+        elseif ($cmp > 0) $node->right = $this->insertRec($node->right, $data);
+        return $node;
+    }
+
+    public function search($data) {
+        return $this->searchRec($this->root, $data);
+    }
+
+    private function searchRec($node, $data) {
+        if ($node === null) return false;
+        $cmp = strcasecmp($data, $node->data);
+        if ($cmp === 0) return true;
+        if ($cmp < 0) return $this->searchRec($node->left, $data);
+        return $this->searchRec($node->right, $data);
+    }
+
+    public function inorderTraversal() {
+        $result = [];
+        $this->inorderRec($this->root, $result);
+        return $result;
+    }
+
+    private function inorderRec($node, &$result) {
+        if ($node === null) return;
+        $this->inorderRec($node->left, $result);
+        $result[] = $node->data;
+        $this->inorderRec($node->right, $result);
+    }
+}
+?>
