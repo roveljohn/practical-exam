@@ -1,47 +1,70 @@
-Summary: PHP Data Structures and Book Management System
- 
-This system provides three distinct methods for managing and accessing book data, each using different programming approaches for optimal performance.
- 
-1. Recursive Category Display
-​
-- Functionality: Processes nested book categories through self-calling functions.
-​
-- Features:
-​
-- Dynamically adjusts indentation to visualize hierarchy depth.
-​
-- Handles unlimited subcategory levels without manual configuration.
-​
-- Example:
- 
- 
-​
-2. Hash Table Data Retrieval
-​
-- Functionality: Implements associative arrays for O(1) access time.
-​
-- Features:
-​
-- Maps book titles directly to metadata collections.
-​
-- Provides immediate fail-safes for missing entries.
-​
-- Example:
- 
- 
-​
-3. Binary Search Tree Operations
-​
-- Functionality: Maintains sorted order through tree structure properties.
-​
-- Features:
-​
-- Enables efficient search operations with O(log n) complexity.
-​
-- Automatically outputs elements in sorted sequence via inorder traversal.
-​
-- Example:
- 
- 
- 
-This system combines data structures like recursion, hash tables, and binary search trees, aiming to provide an efficient, flexible, and reliable solution for book data management..
+<?php
+// main.php
+// Integrates recursion.php, hashtable.php, and bst.php
+
+include 'recursion.php';
+include 'hashtable.php';
+include 'bst.php';
+
+// Build BST from library titles
+$bst = new BinarySearchTree();
+$titles = flattenTitles($library);
+foreach ($titles as $t) $bst->insert($t);
+
+$selectedBook = isset($_GET['book']) ? urldecode($_GET['book']) : null;
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
+
+$searchResult = null;
+if ($searchQuery !== null && $searchQuery !== '') {
+    $exists = $bst->search($searchQuery);
+    $searchResult = ['query' => $searchQuery, 'found' => $exists];
+}
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Digital Library Organizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Digital Library Organizer</h1></header>
+
+<main class="container">
+    <aside class="card">
+        <h3>Library Categories</h3>
+        <?php echo renderLibraryHTML($library); ?>
+    </aside>
+
+    <section class="card">
+        <h3>Book Details</h3>
+        <?php echo getBookInfoHTML($selectedBook, $bookInfo, $bookImages); ?>
+
+        <hr />
+        <h4>Search (BST)</h4>
+        <form method="get" class="controls">
+            <input type="text" name="search" placeholder="Search book title" value="<?php echo htmlspecialchars($searchQuery ?? ''); ?>">
+            <button type="submit">Search</button>
+            <a href="?" class="button secondary"><button type="button" class="secondary">Reset</button></a>
+        </form>
+
+        <?php if ($searchResult): ?>
+            <?php if ($searchResult['found']): ?>
+                <p><strong>"<?php echo htmlspecialchars($searchResult['query']); ?>"</strong> — Found in library.</p>
+            <?php else: ?>
+                <p class="error">"<?php echo htmlspecialchars($searchResult['query']); ?>" — Not Found.</p>
+            <?php endif; ?>
+        <?php endif; ?>
+    </section>
+
+    <aside class="card">
+        <h3>All Titles (Alphabetical)</h3>
+        <ul>
+            <?php foreach ($bst->inorderTraversal() as $s): ?>
+                <li><a href="?book=<?php echo urlencode($s); ?>"><?php echo htmlspecialchars($s); ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    </aside>
+</main>
+</body>
+</html>
