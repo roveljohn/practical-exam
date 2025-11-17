@@ -1,40 +1,69 @@
-recursion.php
-
 <?php
+// recursion.php
+// Handles the recursive category rendering and utility helpers
+
 $library = [
     "Fiction" => [
-        "Science Fiction" => ["Dune", "Neuromancer", "Foundation"],
-        "Fantasy" => ["The Name of the Wind", "Mistborn", "The Way of Kings"],
-        "Mystery" => ["The Girl with the Dragon Tattoo", "Gone Girl", "The Silent Patient"]
+        "Fantasy" => ["Harry Potter", "The Hobbit"],
+        "Mystery" => ["Sherlock Holmes", "Gone Girl"]
     ],
     "Non-Fiction" => [
-        "Biography" => ["Steve Jobs", "Becoming", "Educated"],
-        "Science" => ["A Brief History of Time", "The Selfish Gene", "Sapiens"],
-        "History" => ["The Guns of August", "1776", "The Wright Brothers"]
-    ],
-    "Children's" => [
-        "Picture Books" => ["The Very Hungry Caterpillar", "Where the Wild Things Are", "Goodnight Moon"],
-        "Chapter Books" => ["Charlotte's Web", "Harry Potter", "The Lightning Thief"]
+        "Science" => ["A Brief History of Time", "The Selfish Gene"],
+        "Biography" => ["Steve Jobs", "Becoming"]
     ]
 ];
 
-function displayLibrary($library, $indent = 0) {
-    $spaces = str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", $indent);
-    
-    foreach ($library as $category => $contents) {
-        if (is_array($contents)) {
-            echo $spaces . "📁 <strong>" . $category . "</strong><br>";
-            displayLibrary($contents, $indent + 1);
-        } else {
-            echo $spaces . "📖 <em>" . $contents . "</em><br>";
-        }
-    }
+// Utility: detect if array is a list (numeric keys)
+function is_list_array($arr) {
+    if (!is_array($arr)) return false;
+    return array_keys($arr) === range(0, count($arr) - 1);
 }
 
-echo "<div style='font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; border-radius: 10px; max-width: 600px; margin: 20px auto;'>";
-echo "<h2 style='color: #2c3e50; text-align: center;'>📚 Library Catalog</h2>";
-echo "<div style='background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>";
-displayLibrary($library);
-echo "</div>";
-echo "</div>";
+// Recursive function that generates nested HTML lists
+function renderLibraryHTML($library) {
+    $html = "<ul class=\"library-list\">";
+    foreach ($library as $key => $value) {
+        if (is_int($key)) {
+            $title = htmlspecialchars($value);
+            $html .= "<li class=\"book\"><a href=\"?book=" . urlencode($value) . "\">$title</a></li>";
+            continue;
+        }
+
+        $cat = htmlspecialchars($key);
+        $html .= "<li class=\"category\"><span class=\"cat-label\">$cat</span>";
+        if (is_array($value)) {
+            if (is_list_array($value)) {
+                $html .= "<ul>";
+                foreach ($value as $book) {
+                    $t = htmlspecialchars($book);
+                    $html .= "<li class=\"book\"><a href=\"?book=" . urlencode($book) . "\">$t</a></li>";
+                }
+                $html .= "</ul>";
+            } else {
+                $html .= renderLibraryHTML($value);
+            }
+        }
+        $html .= "</li>";
+    }
+    $html .= "</ul>";
+    return $html;
+}
+
+// Helper: flatten titles from nested library
+function flattenTitles($library, &$out = []) {
+    foreach ($library as $key => $value) {
+        if (is_int($key) && is_string($value)) {
+            $out[] = $value;
+            continue;
+        }
+        if (is_array($value)) {
+            if (is_list_array($value)) {
+                foreach ($value as $book) $out[] = $book;
+            } else {
+                flattenTitles($value, $out);
+            }
+        }
+    }
+    return $out;
+}
 ?>
