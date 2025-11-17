@@ -1,113 +1,47 @@
-HASH TABLE DATA RETRIEVAL
-// ===============================================
-$movieDatabase = [
-    "Iron Man" => [
-        "Director" => "Jon Favreau",
-        "Released" => 2008,
-        "Genre" => "Superhero Action"
-    ],
-    "The Godfather" => [
-        "Director" => "Francis Ford Coppola",
-        "Released" => 1972,
-        "Genre" => "Crime Drama"
-    ],
-    "Titanic" => [
-        "Director" => "James Cameron",
-        "Released" => 1997,
-        "Genre" => "Romantic Drama"
-    ]
+<?php
+// hashtable.php
+// Stores book info and image mapping
+
+$bookInfo = [
+    "Harry Potter" => ["author" => "J.K. Rowling", "year" => 1997, "genre" => "Fantasy"],
+    "The Hobbit" => ["author" => "J.R.R. Tolkien", "year" => 1937, "genre" => "Fantasy"],
+    "Sherlock Holmes" => ["author" => "Arthur Conan Doyle", "year" => 1892, "genre" => "Mystery"],
+    "Gone Girl" => ["author" => "Gillian Flynn", "year" => 2012, "genre" => "Mystery"],
+    "A Brief History of Time" => ["author" => "Stephen Hawking", "year" => 1988, "genre" => "Science"],
+    "The Selfish Gene" => ["author" => "Richard Dawkins", "year" => 1976, "genre" => "Science"],
+    "Steve Jobs" => ["author" => "Walter Isaacson", "year" => 2011, "genre" => "Biography"],
+    "Becoming" => ["author" => "Michelle Obama", "year" => 2018, "genre" => "Biography"]
 ];
 
-function getMovieDetails($title, $database) {
-    echo "=== MOVIE DETAILS ===\n";
-    if (isset($database[$title])) {
-        $data = $database[$title];
-        echo "Title: $title\n";
-        echo "• Director: " . $data['Director'] . "\n";
-        echo "• Released: " . $data['Released'] . "\n";
-        echo "• Genre: " . $data['Genre'] . "\n\n";
+$bookImages = [
+    "Harry Potter" => "images/harry_potter.jpg",
+    "The Hobbit" => "images/the_hobbit.jpg",
+    "Sherlock Holmes" => "images/sherlock_holmes.jpg",
+    "Gone Girl" => "images/gone_girl.jpg",
+    "A Brief History of Time" => "images/brief_history_of_time.jpg",
+    "The Selfish Gene" => "images/the_selfish_gene.jpg",
+    "Steve Jobs" => "images/steve_jobs.jpg",
+    "Becoming" => "images/becoming.jpg"
+];
+
+// Helper: get HTML for book info + image
+function getBookInfoHTML($title, $bookInfo, $bookImages) {
+    if (!$title) return "<p class=\"muted\">No book selected.</p>";
+    $html = "<div class=\"book-details\">";
+    if (isset($bookImages[$title]) && file_exists($bookImages[$title])) {
+        $src = htmlspecialchars($bookImages[$title]);
+        $html .= "<img class=\"book-cover\" src=\"$src\" alt=\"" . htmlspecialchars($title) . " cover\">";
+    }
+    if (isset($bookInfo[$title])) {
+        $info = $bookInfo[$title];
+        $html .= "<h2>" . htmlspecialchars($title) . "</h2>";
+        $html .= "<p><strong>Author:</strong> " . htmlspecialchars($info['author']) . "</p>";
+        $html .= "<p><strong>Year:</strong> " . htmlspecialchars($info['year']) . "</p>";
+        $html .= "<p><strong>Genre:</strong> " . htmlspecialchars($info['genre']) . "</p>";
     } else {
-        echo "Title: $title\n• STATUS: Not found in database\n\n";
+        $html .= "<p class=\"error\">Book not found in details table.</p>";
     }
-}
-
-getMovieDetails("The Godfather", $movieDatabase);
-getMovieDetails("Iron Man", $movieDatabase);
-getMovieDetails("Unknown Movie", $movieDatabase);
-
-// ===============================================
-// 3. BINARY SEARCH TREE OPERATIONS
-// ===============================================
-class Node {
-    public $data;
-    public $left;
-    public $right;
-
-    public function __construct($data) {
-        $this->data = $data;
-        $this->left = null;
-        $this->right = null;
-    }
-}
-
-class BinarySearchTree {
-    public $root;
-
-    public function __construct() {
-        $this->root = null;
-    }
-
-    public function insert($data) {
-        $this->root = $this->insertRec($this->root, $data);
-    }
-
-    private function insertRec($node, $data) {
-        if ($node == null) return new Node($data);
-        if (strcasecmp($data, $node->data) < 0)
-            $node->left = $this->insertRec($node->left, $data);
-        else
-            $node->right = $this->insertRec($node->right, $data);
-        return $node;
-    }
-
-    public function inorderTraversal($node) {
-        if ($node != null) {
-            $this->inorderTraversal($node->left);
-            echo $node->data . "\n";
-            $this->inorderTraversal($node->right);
-        }
-    }
-
-    public function search($node, $data) {
-        if ($node == null) return false;
-        if (strcasecmp($data, $node->data) == 0) return true;
-        if (strcasecmp($data, $node->data) < 0)
-            return $this->search($node->left, $data);
-        else
-            return $this->search($node->right, $data);
-    }
-}
-
-// Create BST and insert movies
-$bst = new BinarySearchTree();
-$movieTitles = [
-    "Iron Man", "Jurassic Park", "Pirates of the Caribbean",
-    "Spider-Man: No Way Home", "The Godfather", "The Irishman",
-    "The Notebook", "Titanic"
-];
-
-foreach ($movieTitles as $title) {
-    $bst->insert($title);
-}
-
-echo "=== ALPHABETICAL MOVIE INDEX ===\n";
-$bst->inorderTraversal($bst->root);
-echo "\n";
-
-echo "=== QUERY RESULTS ===\n";
-$queries = ["Titanic", "Avatar", "The Godfather"];
-foreach ($queries as $query) {
-    $found = $bst->search($bst->root, $query);
-    echo "Search(\"$query\"): " . ($found ? "✓ FOUND" : "✗ NOT FOUND") . "\n";
+    $html .= "</div>";
+    return $html;
 }
 ?>
