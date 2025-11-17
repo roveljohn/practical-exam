@@ -1,0 +1,153 @@
+* style.css — Digital Library Organizer UI */
+
+/* Base */
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: #f5f7fb;
+  color: #222;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  background: #2b2f4a;
+  color: #fff;
+  padding: 16px 24px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* Layout */
+.container {
+  display: grid;
+  grid-template-columns: 320px 1fr 360px;
+  gap: 18px;
+  padding: 18px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(22, 28, 37, 0.06);
+}
+
+/* Library Lists */
+.library-list,
+.library-list ul {
+  list-style: none;
+  padding-left: 12px;
+  margin: 6px 0;
+}
+
+.category > .cat-label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #e8eaf4;
+  transition: background 0.2s;
+}
+
+.category > .cat-label:hover {
+  background: #d5d7ee;
+}
+
+.category > ul {
+  margin-left: 8px;
+}
+
+.book a {
+  text-decoration: none;
+  color: #2b2f4a;
+}
+
+.book a:hover {
+  text-decoration: underline;
+}
+
+/* Text & Alerts */
+.muted {
+  color: #666;
+}
+
+.error {
+  color: #a33;
+}
+
+/* Search Form */
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+input[type=text] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2b2f4a;
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #6b6f89;
+}
+
+/* Book Details */
+.book-details h2 {
+  margin-top: 0;
+}
+
+.book-cover {
+  float: right;
+  max-width: 180px;
+  margin-left: 12px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(22, 28, 37, 0.08);
+}
+
+.search-thumb {
+  width: 56px;
+  height: auto;
+  vertical-align: middle;
+  margin-left: 8px;
+  border-radius: 4px;
+}
+
+/* Lists */
+.inorder-list {
+  max-height: 360px;
+  overflow: auto;
+}
+
+.small-note {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .book-cover {
+    float: none;
+    display: block;
+    margin: 8px auto;
+    max-width: 60%;
+  }
+}
